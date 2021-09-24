@@ -1,6 +1,49 @@
 <template>
-    <router-view />
+    <div>
+        <div v-if="!mobile" class="app flex flex-column">
+            <navigation />
+
+            <div class="app-content flex flex-column">
+                <router-view />
+            </div>
+        </div>
+        <div v-else class="mobile-message flex flex-column">
+            <h2>Sorry, this app is not supported on Mobile devices</h2>
+            <p>To use this app, please use a computer or tablet</p>
+        </div>
+    </div>
 </template>
+
+<script>
+import Navigation from './components/Navigation'
+
+export default {
+    components: {
+        Navigation,
+    },
+    data () {
+        return {
+            mobile: null,
+        }
+    },
+    created () {
+        this.checkScreen()
+        window.addEventListener('resize', this.checkScreen)
+    },
+    methods: {
+        checkScreen () {
+            const windowWidth = window.innerWidth
+
+            if (windowWidth <= 750) {
+                this.mobile = true
+                return
+            }
+
+            this.mobile = false
+        }
+    }
+}
+</script>
 
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
@@ -8,9 +51,36 @@
 * {
     font-family: "Poppins", sans-serif;
     box-sizing: border-box;
-    background-color: #141625;
     padding: 0;
     margin: 0;
+}
+
+.app {
+    min-height: 100vh;
+    background-color: #141625;
+
+    @media (min-width: 900px) {
+        flex-direction: row !important;
+    }
+
+    &-content {
+        position: relative;
+        flex: 1;
+        padding: 0 20px;
+    }
+}
+
+.mobile-message {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    color: #fff;
+    background-color: #141625;
+
+    p {
+        margin-top: 16px;
+    }
 }
 
 button,
