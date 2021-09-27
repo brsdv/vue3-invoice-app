@@ -85,7 +85,7 @@
                     margin-left: 12px;
                 }
 
-                .filter-menu {
+                &-menu {
                     position: absolute;
                     top: 25px;
                     width: 120px;

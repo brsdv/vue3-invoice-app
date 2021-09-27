@@ -4,6 +4,7 @@
             <navigation />
 
             <div class="app-content flex flex-column">
+                <invoice-modal />
                 <router-view />
             </div>
         </div>
@@ -16,10 +17,12 @@
 
 <script>
 import Navigation from './components/Navigation'
+import InvoiceModal from './components/InvoiceModal'
 
 export default {
     components: {
         Navigation,
+        InvoiceModal,
     },
     data () {
         return {
