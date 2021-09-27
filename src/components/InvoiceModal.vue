@@ -96,7 +96,11 @@
                             <th class="price">Price</th>
                             <th class="total">Toal</th>
                         </tr>
-                        <tr class="table-items flex" v-for="(item, index) in invoiceItemList" :key="index">
+                        <tr
+                            class="table-items flex"
+                            v-for="(item, index) in invoiceItemList"
+                            :key="index"
+                        >
                             <td class="item-name">
                                 <input type="text" v-model="item.itemName" />
                             </td>
@@ -123,12 +127,30 @@
             <!-- Save/Exit -->
             <div class="save flex">
                 <div class="left">
-                    <button type="button" @click="closeInvoice" class="red">Cancel</button>
+                    <button
+                        type="button"
+                        class="red"
+                        @click="closeInvoice"
+                    >Cancel</button>
                 </div>
                 <div class="right flex">
-                    <button v-if="!editInvoice" type="submit" @click="saveDraft" class="dark-purple">Save Draft</button>
-                    <button v-if="!editInvoice" type="submit" @click="publishInvoice" class="purple">Create Invoice</button>
-                    <button v-if="editInvoice" type="sumbit" class="purple">Update Invoice</button>
+                    <button
+                        v-if="!editInvoice"
+                        type="submit"
+                        class="dark-purple"
+                        @click="saveDraft"
+                    >Save Draft</button>
+                    <button
+                        v-if="!editInvoice"
+                        type="submit"
+                        class="purple"
+                        @click="publishInvoice"
+                    >Create Invoice</button>
+                    <button
+                        v-if="editInvoice"
+                        type="sumbit"
+                        class="purple"
+                    >Update Invoice</button>
                 </div>
             </div>
         </form>
@@ -136,7 +158,10 @@
 </template>
 
 <script>
+import { db } from '../firebase/firebaseInit';
+import { collection, addDoc } from 'firebase/firestore'; 
 import { mapMutations } from 'vuex'
+import { uid } from 'uid'
 
 export default {
     name: 'invoice-modal',
@@ -176,10 +201,76 @@ export default {
     methods: {
         ...mapMutations(['TOGGLE_INVOICE']),
         checkClick () {
-            
         },
         closeInvoice () {
             this.TOGGLE_INVOICE()
+        },
+        addNewInvoiceItem () {
+            this.invoiceItemList.push({
+                id: uid(),
+                itemName: '',
+                qty: '',
+                price: 0,
+                total: 0
+            })
+        },
+        deleteInvoiceItem (id) {
+            this.invoiceItemList = this.invoiceItemList.filter(item => item.id !== id)
+        },
+        calInvoiceTotal () {
+            this.invoiceTotal = 0
+            this.invoiceItemList.forEach(item => {
+                this.invoiceTotal += item.total
+            })
+        },
+        publishInvoice () {
+            this.invoicePending = true
+        },
+        saveDraft () {
+            this.invoiceDraft = true
+        },
+        async uploadInvoice () {
+            if (this.invoiceItemList.length <= 0) {
+                alert('Please ensure you filled out work items!')
+                return
+            }
+
+            this.calInvoiceTotal()
+
+            try {
+                const docRef = await addDoc(collection(db, 'invoices'), {
+                    invoiceId: uid(6),
+                    billerStreetAddress: this.billerStreetAddress,
+                    billerCity: this.billerCity,
+                    billerZipCode: this.billerZipCode,
+                    billerCountry: this.billerCountry,
+                    clientName: this.clientName,
+                    clientEmail: this.clientEmail,
+                    clientStreetAddress: this.clientStreetAddress,
+                    clientCity: this.clientCity,
+                    clientZipCode: this.clientZipCode,
+                    clientCountry: this.clientCountry,
+                    invoiceDate: this.invoiceDate,
+                    invoiceDateUnix: this.invoiceDateUnix,
+                    paymentTerms: this.paymentTerms,
+                    paymentDueDate: this.paymentDueDate,
+                    paymentDueDateUnix: this.paymentDueDateUnix,
+                    productDescription: this.productDescription,
+                    invoiceItemList: this.invoiceItemList,
+                    invoiceTotal: this.invoiceTotal,
+                    invoicePending: this.invoicePending,
+                    invoiceDraft: this.invoiceDraft,
+                    invoicePaid: null,
+                })
+                console.log("Document written with ID: ", docRef.id)
+            } catch (e) {
+                console.error("Error adding document: ", e)
+            }
+
+            this.TOGGLE_INVOICE()
+        },
+        submitForm () {
+            this.uploadInvoice()
         }
     },
     watch: {
