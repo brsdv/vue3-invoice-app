@@ -29,24 +29,27 @@
 </template>
 
 <script>
-    export default {
-        name: 'Home',
-        components: {},
-        data () {
-            return {
-                filterMenu: null,
-                
-            }
-        },
-        methods: {
-            newInvoice () {
+import { mapMutations } from 'vuex'
 
-            },
-            toogleFilterMenu () {
-                this.filterMenu = !this.filterMenu
-            }
+export default {
+    name: 'Home',
+    components: {},
+    data () {
+        return {
+            filterMenu: null,
+            
+        }
+    },
+    methods: {
+        ...mapMutations(['TOGGLE_INVOICE']),
+        newInvoice () {
+            this.TOGGLE_INVOICE()
+        },
+        toogleFilterMenu () {
+            this.filterMenu = !this.filterMenu
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
