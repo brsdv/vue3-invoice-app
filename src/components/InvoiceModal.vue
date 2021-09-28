@@ -8,6 +8,8 @@
             class="invoice-content"
             @submit.prevent="submitForm"
         >
+            <loading v-show="loading" />
+            <!-- Title -->
             <h1>New Invoice</h1>
 
             <!-- Bill From -->
@@ -162,11 +164,16 @@ import { db } from '../firebase/firebaseInit';
 import { collection, addDoc } from 'firebase/firestore'; 
 import { mapMutations } from 'vuex'
 import { uid } from 'uid'
+import Loading from './Loading'
 
 export default {
     name: 'invoice-modal',
+    components: {
+        Loading
+    },
     data () {
         return {
+            loading: null,
             dateOptions: {
                 year: "numeric",
                 month: "short",
@@ -237,6 +244,8 @@ export default {
 
             this.calInvoiceTotal()
 
+            this.loading = true
+
             try {
                 const docRef = await addDoc(collection(db, 'invoices'), {
                     invoiceId: uid(6),
@@ -266,6 +275,8 @@ export default {
             } catch (e) {
                 console.error("Error adding document: ", e)
             }
+
+            this.loading = false
 
             this.TOGGLE_INVOICE()
         },
