@@ -160,8 +160,8 @@
 </template>
 
 <script>
-import { db } from '../firebase/firebaseInit';
-import { collection, addDoc } from 'firebase/firestore'; 
+import { db } from '../firebase/firebaseInit'
+import { collection, addDoc } from 'firebase/firestore'
 import { mapMutations } from 'vuex'
 import { uid } from 'uid'
 import Loading from './Loading'
