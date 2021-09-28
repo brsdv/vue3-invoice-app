@@ -206,8 +206,11 @@ export default {
         this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleString('en-us', this.dateOptions)
     },
     methods: {
-        ...mapMutations(['TOGGLE_INVOICE']),
-        checkClick () {
+        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
+        checkClick (e) {
+            if (e.target === this.$refs.invoiceWrap) {
+                this.TOGGLE_MODAL()
+            }
         },
         closeInvoice () {
             this.TOGGLE_INVOICE()
