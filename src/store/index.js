@@ -7,7 +7,8 @@ export default createStore({
         invoiceData: [],
         invoiceModal: null,
         modalActive: null,
-        invoicesLoaded: null
+        invoicesLoaded: null,
+        currentInvoiceArray: null
     },
     mutations: {
         TOGGLE_INVOICE (state) {
@@ -18,15 +19,22 @@ export default createStore({
         },
         SET_INVOICE_DATA (state, payload) {
             state.invoiceData.push(payload)
-            console.log(state.invoiceData)
+            // console.log(state.invoiceData)
         },
         INVOICES_LOADED (state) {
             state.invoicesLoaded = true
+        },
+        SET_CURRENT_INVOICE (state, payload) {
+            state.currentInvoiceArray = state.invoiceData.filter(item => {
+                return item.invoiceId === payload
+            })
+            // console.log(state.currentInvoiceArray[0])
         }
     },
     actions: {
         async GET_INVOICES ({ commit, state }) {
             const querySnapshot = await getDocs(collection(db, 'invoices'))
+
             querySnapshot.forEach((doc) => {
                 if (!state.invoiceData.some(item => item.docId === doc.id)) {
                     const data = {
