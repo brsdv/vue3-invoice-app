@@ -121,7 +121,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(['currentInvoiceArray']),
+        ...mapState(['currentInvoiceArray', 'editInvoice']),
         classObject () {
             const arrClass = [
                 'status-button flex',
@@ -142,6 +142,13 @@ export default {
             if (this.currentInvoice.invoicePending) status = 'Pending'
 
             return status
+        }
+    },
+    watch: {
+        editInvoice() {
+            if (!this.editInvoice) {
+                this.currentInvoice = this.currentInvoiceArray[0];
+            }
         }
     }
 }
