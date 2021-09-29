@@ -4,17 +4,27 @@
         <div class="header flex">
             <div class="left flex flex-column">
                 <h1>Invoices</h1>
-                <span>There are 4 total invoices</span>
+                <span>There are {{ invoiceData.length }} total invoices</span>
             </div>
             <div class="right flex">
                 <div class="filter flex" @click="toogleFilterMenu">
-                    <span>Filter by status</span>
+                    <span>
+                        Filter by status
+                        <span
+                            v-if="filteredInvoice"
+                            :class="classObject"
+                        >{{ filteredInvoice }}</span>
+                    </span>
                     <img src="@/assets/icon-arrow-down.svg" alt="" />
-                    <ul v-show="filterMenu" class="filter-menu">
+                    <ul
+                        v-show="filterMenu"
+                        class="filter-menu"
+                        @click="filteredInvoices"
+                    >
+                        <li>All</li>
                         <li>Draft</li>
                         <li>Pending</li>
                         <li>Paid</li>
-                        <li>Clear Filter</li>
                     </ul>
                 </div>
                 <div class="button flex" @click="newInvoice">
@@ -29,7 +39,7 @@
         <!-- Invoices -->
         <div v-if="invoiceData.length">
             <invoice
-                v-for="(invoice, index) in invoiceData"
+                v-for="(invoice, index) in filteredData"
                 :key="index"
                 :invoice="invoice"
             />
@@ -54,7 +64,7 @@ export default {
     data () {
         return {
             filterMenu: null,
-            
+            filteredInvoice: null
         }
     },
     methods: {
@@ -64,10 +74,45 @@ export default {
         },
         toogleFilterMenu () {
             this.filterMenu = !this.filterMenu
+        },
+        filteredInvoices (e) {
+            if (e.target.innerText === 'All') {
+                this.filteredInvoice = null
+                return
+            }
+            this.filteredInvoice = e.target.innerText
         }
     },
     computed: {
-        ...mapState(['invoiceData'])
+        ...mapState(['invoiceData']),
+        filteredData () {
+            return this.invoiceData.filter(item => {
+                if (this.filteredInvoice === 'Draft') {
+                    return item.invoiceDraft === true
+                }
+
+                if (this.filteredInvoice === 'Pending') {
+                    return item.invoicePending === true
+                }
+
+                if (this.filteredInvoice === 'Paid') {
+                    return item.invoicePaid === true
+                }
+
+                return item
+            })
+        },
+        classObject () {
+            const arrClass = [
+                {
+                    'draft-text': this.filteredInvoice === 'Draft',
+                    'pending-text': this.filteredInvoice === 'Pending',
+                    'paid-text': this.filteredInvoice === 'Paid'
+                }
+            ]
+
+            return arrClass
+        }
     }
 }
 </script>

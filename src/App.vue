@@ -199,6 +199,10 @@ button,
     &::before {
         background-color: #33d69f;
     }
+
+    &-text {
+        color: #33d69f;
+    }
 }
 
 .pending {
@@ -208,6 +212,10 @@ button,
     &::before {
         background-color: #ff8f00;
     }
+
+    &-text {
+        color: #ff8f00;
+    }
 }
 
 .draft {
@@ -216,6 +224,11 @@ button,
 
     &::before {
         background-color: #dfe3fa;
+    }
+
+    &-text {
+        color: #dfe3fa;
+        opacity: 0.5;
     }
 }
 </style>
