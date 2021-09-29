@@ -9,8 +9,10 @@
             @submit.prevent="submitForm"
         >
             <loading v-show="loading" />
+
             <!-- Title -->
-            <h1>New Invoice</h1>
+            <h1 v-if="!editInvoice">New Invoice</h1>
+            <h1 v-else>Edit Invoice</h1>
 
             <!-- Bill From -->
             <div class="bill-from flex flex-column">
@@ -162,7 +164,7 @@
 <script>
 import { db } from '../firebase/firebaseInit'
 import { collection, addDoc } from 'firebase/firestore'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import { uid } from 'uid'
 import Loading from './Loading'
 
@@ -206,7 +208,7 @@ export default {
         this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleString('en-us', this.dateOptions)
     },
     methods: {
-        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL']),
+        ...mapMutations(['TOGGLE_INVOICE', 'TOGGLE_MODAL', 'TOGGLE_EDIT_INVOICE']),
         checkClick (e) {
             if (e.target === this.$refs.invoiceWrap) {
                 this.TOGGLE_MODAL()
@@ -214,6 +216,7 @@ export default {
         },
         closeInvoice () {
             this.TOGGLE_INVOICE()
+            if (this.editInvoice) this.TOGGLE_EDIT_INVOICE()
         },
         addNewInvoiceItem () {
             this.invoiceItemList.push({
@@ -286,6 +289,9 @@ export default {
         submitForm () {
             this.uploadInvoice()
         }
+    },
+    computed: {
+        ...mapState(['editInvoice']),
     },
     watch: {
         paymentTerms () {
