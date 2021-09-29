@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import { db } from '../firebase/firebaseInit';
-import { collection, doc, getDocs, deleteDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, updateDoc, deleteDoc } from 'firebase/firestore'
 
 export default createStore({
     state: {
@@ -37,6 +37,23 @@ export default createStore({
         DELETE_INVOICE (state, payload) {
             state.invoiceData = state.invoiceData.filter(item => {
                 return item.docId !== payload
+            })
+        },
+        UPDATE_STATUS_TO_PAID (state, payload) {
+            state.invoiceData.forEach(item => {
+                if (item.docId === payload) {
+                    item.invoicePaid = true
+                    item.invoicePending = false
+                }
+            })
+        },
+        UPDATE_STATUS_TO_PENDING (state, payload) {
+            state.invoiceData.forEach(item => {
+                if (item.docId === payload) {
+                    item.invoicePaid = false
+                    item.invoicePending = true
+                    item.invoiceDraft = false
+                }
             })
         }
     },
@@ -88,6 +105,27 @@ export default createStore({
         async DELETE_INVOICE ({ commit }, docId) {
             await deleteDoc(doc(db, "invoices", docId))
             commit('DELETE_INVOICE', docId)
+        },
+        async UPDATE_STATUS_TO_PAID ({ commit }, docId) {
+            const docIdRef = doc(db, "invoices", docId);
+
+            await updateDoc(docIdRef, {
+                invoicePaid: true,
+                invoicePending: false
+            })
+
+            commit('UPDATE_STATUS_TO_PAID', docId)
+        },
+        async UPDATE_STATUS_TO_PENDING ({ commit }, docId) {
+            const docIdRef = doc(db, "invoices", docId);
+
+            await updateDoc(docIdRef, {
+                invoicePaid: false,
+                invoicePending: true,
+                invoiceDraft: false
+            })
+
+            commit('UPDATE_STATUS_TO_PENDING', docId)
         }
     },
     modules: {
