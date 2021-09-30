@@ -72,7 +72,7 @@
                 <div class="billing-items">
                     <div class="heading flex">
                         <p>Item Name</p>
-                        <p>QTY</p>
+                        <p>QTY hours</p>
                         <p>Price</p>
                         <p>Total</p>
                     </div>
@@ -84,12 +84,12 @@
                         <p>{{ item.itemName }}</p>
                         <p>{{ item.qty }}</p>
                         <p>{{ item.price }}</p>
-                        <p>{{ item.total }}</p>
+                        <p>${{ item.total }}</p>
                     </div>
                 </div>
                 <div class="total flex">
                     <p>Amount Due</p>
-                    <p>{{ currentInvoice.invoiceTotal }}</p>
+                    <p>${{ currentInvoice.invoiceTotal }}</p>
                 </div>
             </div>
         </div>
