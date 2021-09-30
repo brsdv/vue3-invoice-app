@@ -27,8 +27,8 @@ npm run lint
 npm run deploy
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-See [Vuex info](https://vuex.vuejs.org/).
-See [Vue router info](https://router.vuejs.org/).
-See [Firebase (Firestore database)](https://firebase.google.com/docs/firestore/).
+### See information stack
+* [Configuration Reference](https://cli.vuejs.org/config/)
+* [Vuex info](https://vuex.vuejs.org/)
+* [Vue router info](https://router.vuejs.org/)
+* [Firebase (Firestore database)](https://firebase.google.com/docs/firestore/)
